@@ -1,9 +1,8 @@
 use std::collections::VecDeque;
-use std::sync::{Arc, Mutex, mpsc};
+use std::sync::{Arc, Condvar, Mutex, mpsc};
 use std::thread;
 use std::time;
 
-const DURATION_WAITER_TRYQUEUE: u64 = 10;
 const DURATION_WAITER_TAKEFOOD: u64 = 100;
 const DURATION_WAITER_SERVEFOOD: u64 = 100;
 const DURATION_WAITER_RESTUP: u64 = 500;
@@ -22,23 +21,27 @@ struct Request {
 fn main() {
     println!("Startujem.\n");
 
-    let queue = Arc::new(Mutex::new(VecDeque::<Request>::new()));
+    let queue = Arc::new((Mutex::new(VecDeque::<Request>::new()), Condvar::new()));
 
     let mut host_handles = vec![];
 
     for host_id in 0..N_HOSTS {
         let queue = Arc::clone(&queue);
         let handle = thread::spawn(move || {
+            let (lock, cvar) = &*queue;
             for (course_index, course) in COURSES.iter().enumerate() {
                 let (transmitter, receiver) = mpsc::channel::<()>();
+
                 {
-                    let mut requests = queue.lock().unwrap();
+                    let mut requests = lock.lock().unwrap();
                     requests.push_back(Request {
                         host_id,
                         course_index,
                         transmitter,
                     });
+                    cvar.notify_one();
                 }
+
                 receiver.recv().unwrap();
 
                 println!("Host {host_id} konzumuje {course}.");
@@ -46,21 +49,23 @@ fn main() {
                 println!("Host {host_id} dojedl {course}.");
             }
         });
+
         host_handles.push(handle);
     }
 
     for waiter_n in 0..N_WAITERS {
         let queue = Arc::clone(&queue);
         thread::spawn(move || {
+            let (lock, cvar) = &*queue;
             loop {
-                let request = loop {
-                    {
-                        let mut requests = queue.lock().unwrap();
-                        if !requests.is_empty() {
-                            break requests.pop_front().unwrap();
+                let request = {
+                    let mut requests = lock.lock().unwrap();
+                    loop {
+                        if let Some(request) = requests.pop_front() {
+                            break request;
                         }
+                        requests = cvar.wait(requests).unwrap();
                     }
-                    thread::sleep(time::Duration::from_millis(DURATION_WAITER_TRYQUEUE));
                 };
 
                 println!(

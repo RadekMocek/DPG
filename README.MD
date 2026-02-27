@@ -6,7 +6,8 @@
 ## Restaurace
 
 ```text
-Vytvořte aplikaci využívající synchronizační primitiva k vytvoření aplikace, která bude simulovat provoz v restauraci:
+Vytvořte aplikaci využívající synchronizační primitiva k vytvoření aplikace,
+která bude simulovat provoz v restauraci:
 
 * Máme stůl, kde je 5 hostů.
 * Máme 3 chody – polévku, hlavní jídlo a zákusek, ty budou servírovány v tomto pořadí.
@@ -25,17 +26,20 @@ Vytvořte aplikaci využívající synchronizační primitiva k vytvoření apli
   > host Y konzumuje JIDLO
 ```
 
+[Restaurace source](./a_restaurace/src/main.rs)
 </details>
 
 <details>
-<summary><code>//todo</code></summary>
+<summary><code>./b_sorting</code></summary>
 
 ## Sortovací algoritmy
 
 ```text
-Vytvořte aplikaci která bude implementovat vám již námé 2 řadící algoritmy – QuickSort a MergeSort – s následujícími parametry:
+Vytvořte aplikaci která bude implementovat vám již námé 2 řadící algoritmy,
+QuickSort a MergeSort, s následujícími parametry:
 
-* Vygenerujete si pole či obdobnou kolekci 1000 náhodných čísel v rozmezí 1–10000. Vygenerované hodnoty budou jedinečné.
+* Vygenerujete si pole či obdobnou kolekci 1000 náhodných čísel v rozmezí 1–10000.
+* Vygenerované hodnoty budou jedinečné.
 * Implementujte 4 algoritmy:
   * QuickSort v jednom vlákně
   * QuickSort jako multithread
@@ -46,4 +50,5 @@ Vytvořte aplikaci která bude implementovat vám již námé 2 řadící algori
 * Zkontrolujte seřazené hodnoty a srovnejte časy běhu jednotlivých algoritmů.
 ```
 
+[Sortovací algoritmy source](./b_sorting/src/)
 </details>
