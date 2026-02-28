@@ -1,3 +1,4 @@
+mod mergesort;
 mod quicksort;
 
 use rand::seq::SliceRandom;
@@ -32,5 +33,17 @@ fn main() {
     let mut arr = arr_orig.clone();
     let now = time::Instant::now();
     quicksort::parallel(&mut arr);
+    print_results(&arr, &now);
+
+    println!("\n== Sequential mergesort ==");
+    let mut arr = arr_orig.clone();
+    let now = time::Instant::now();
+    mergesort::sequential(&mut arr);
+    print_results(&arr, &now);
+
+    println!("\n== Parallel mergesort ==");
+    let mut arr = arr_orig.clone();
+    let now = time::Instant::now();
+    mergesort::parallel(&mut arr);
     print_results(&arr, &now);
 }
