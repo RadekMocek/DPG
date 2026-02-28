@@ -53,7 +53,7 @@ fn main() {
         host_handles.push(handle);
     }
 
-    for waiter_n in 0..N_WAITERS {
+    for waiter_id in 0..N_WAITERS {
         let queue = Arc::clone(&queue);
         thread::spawn(move || {
             let (lock, cvar) = &*queue;
@@ -70,19 +70,19 @@ fn main() {
 
                 println!(
                     "Číšník {} bere {} pro hosta {}.",
-                    waiter_n, COURSES[request.course_index], request.host_id
+                    waiter_id, COURSES[request.course_index], request.host_id
                 );
                 thread::sleep(time::Duration::from_millis(DURATION_WAITER_TAKEFOOD));
 
                 println!(
                     "Číšník {} servíruje {} pro hosta {}.",
-                    waiter_n, COURSES[request.course_index], request.host_id
+                    waiter_id, COURSES[request.course_index], request.host_id
                 );
                 thread::sleep(time::Duration::from_millis(DURATION_WAITER_SERVEFOOD));
 
                 request.transmitter.send(()).unwrap();
 
-                println!("Číšník {waiter_n} jde na cigáro.");
+                println!("Číšník {waiter_id} jde na cigáro.");
                 thread::sleep(time::Duration::from_millis(DURATION_WAITER_RESTUP));
             }
         });
