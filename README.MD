@@ -52,3 +52,17 @@ QuickSort a MergeSort, s následujícími parametry:
 
 [Sortovací algoritmy source](./b_sorting/src/)
 </details>
+
+<details>
+<summary><code>./c_mpi</code></summary>
+
+Hrajeme si s MPI.
+
+```bash
+sudo apt install libopenmpi-dev openmpi-bin clang
+cargo build
+mpirun -np 2 ./target/debug/c_mpi
+```
+
+[Source](./c_mpi/src/)
+</details>
