@@ -1,5 +1,8 @@
 # TUL FM NTI/DPG – Distribuované programování
 
+<!------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------>
+
 <details>
 <summary><code>./a_restaurace</code></summary>
 
@@ -29,6 +32,9 @@ která bude simulovat provoz v restauraci:
 [Restaurace source](./a_restaurace/src/main.rs)
 </details>
 
+<!------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------>
+
 <details>
 <summary><code>./b_sorting</code></summary>
 
@@ -53,10 +59,15 @@ QuickSort a MergeSort, s následujícími parametry:
 [Sortovací algoritmy source](./b_sorting/src/)
 </details>
 
+<!------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------>
+
 <details>
 <summary><code>./c_mpi</code></summary>
 
-Hrajeme si s MPI.
+Projekt pro ověření funkčnosti lokálního MPI.
+
+__Linux:__
 
 ```bash
 sudo apt install libopenmpi-dev openmpi-bin clang
@@ -64,5 +75,28 @@ cargo build
 mpirun -np 2 ./target/debug/c_mpi
 ```
 
+__Windows:__
+
+* Nainstalovat [Microsoft MPI](https://learn.microsoft.com/en-us/message-passing-interface/microsoft-mpi)
+  * msmpisetup.exe __a__ msmpisdk.msi
+* Nainstalovat [LLVM](https://releases.llvm.org/download.html)
+  * Zaškrtnout _Add LLVM to the system PATH_
+
+```powershell
+cargo build
+mpiexec -np 2 target\debug\c_mpi.exe
+```
+
+<!------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------>
+
 [Source](./c_mpi/src/)
+</details>
+
+<details>
+<summary><code>./d_sorting_mpi</code></summary>
+
+Porovnání řazení: sekvenčně, vícevláknově, MPI.
+
+[Source](./d_sorting_mpi/src/)
 </details>

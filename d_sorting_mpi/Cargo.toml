@@ -1,0 +1,8 @@
+[package]
+name = "d_sorting_mpi"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+mpi = "0.8.1"
+rand = "0.10.0"
