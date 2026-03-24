@@ -1,7 +1,7 @@
 use crate::CPUS;
 use std::thread;
 
-pub(super) fn merge(arr: &mut [u16], div: usize) {
+pub(super) fn merge(arr: &mut [u32], div: usize) {
     let arr1 = arr[..div].to_owned();
     let arr2 = arr[div..].to_owned();
 
@@ -22,7 +22,7 @@ pub(super) fn merge(arr: &mut [u16], div: usize) {
     }
 }
 
-pub(super) fn sequential(arr: &mut [u16]) {
+pub(super) fn sequential(arr: &mut [u32]) {
     let arrlen = arr.len();
     if arrlen > 1 {
         let div = arrlen / 2;
@@ -32,11 +32,11 @@ pub(super) fn sequential(arr: &mut [u16]) {
     }
 }
 
-pub(super) fn concurrent(arr: &mut [u16]) {
+pub(super) fn concurrent(arr: &mut [u32]) {
     concurrent_impl(arr, 0);
 }
 
-fn concurrent_impl(arr: &mut [u16], curr_cpus: u32) {
+fn concurrent_impl(arr: &mut [u32], curr_cpus: u32) {
     let arrlen = arr.len();
     if arrlen > 1 {
         if curr_cpus < CPUS.ilog2() {

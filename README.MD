@@ -84,7 +84,7 @@ __Windows:__
 
 ```powershell
 cargo build
-mpiexec -np 2 target\debug\c_mpi.exe
+mpiexec -np 2 .\target\debug\c_mpi.exe
 ```
 
 <!------------------------------------------------------------------------------------------------------>
@@ -100,3 +100,68 @@ Porovnání řazení: sekvenčně, vícevláknově, MPI.
 
 [Source](./d_sorting_mpi/src/)
 </details>
+
+<!------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------>
+
+<details>
+<summary><code>./e_matmul</code></summary>
+
+* Vygenerujete si dvě různé celočíselné matice (N x N).
+* Implementujte násobení matic: v jednom vlákně, ve více vláknech, v MPI.
+* Pro každý algoritmus zaznamenejte dobu trvání běhu.
+
+[Source](./e_matmul/src/)
+</details>
+
+## Výsledky
+
+### Merge sort
+
+* Pracuje in-place, ale pro každý merge si alokuje dodatečnou paměť odpovídající počtu právě mergovaných prvků
+* _Concurrent_ běží souběžně na 8 vláknech
+* _MPI_: 7 Workerů, kterým Master pouze zadá práci a pak zmerguje výsledek
+
+Desktop (Win10 + Xeon E3-1270 v3 + 16 GB):
+
+```text
+Generated vector of size 100000000
+
+== Sequential ==
+Is sorted: true
+~ Elapsed: 26.16s
+
+== Concurrent ==
+Is sorted: true
+~ Elapsed: 7.15s
+
+== MPI ==
+Is sorted: true
+~ Elapsed: 8.06s
+```
+
+### Násobení matic
+
+* Druhou matici si transponuji, pak zip→map→sum
+* _Concurrent_ běží souběžně na 8 vláknech
+* _MPI_: 7 Workerů a Master, který tentokrát pracuje také
+
+Desktop (Win10 + Xeon E3-1270 v3 + 16 GB):
+
+```text
+mx1 created, size 3000x3000
+mx2 created, size 3000x3000
+
+=== MXMUL Sequential ===
+~ Elapsed: 11.38s
+
+=== MXMUL Concurrent ===
+~ Elapsed: 2.86s
+
+=== MXMUL MPI ===
+~ Elapsed: 5.31s
+
+=== Check ===
+1 == 2 OK
+2 == 3 OK
+```

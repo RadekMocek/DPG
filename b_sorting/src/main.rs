@@ -21,6 +21,10 @@ fn print_results(arr: &[u16], instant: &time::Instant) {
 }
 
 fn main() {
+    if let Ok(cpus_estimate) = std::thread::available_parallelism() {
+        println!("CPUS estimate: {cpus_estimate}");
+    }
+
     let arr_orig = generate_input();
 
     println!("\n== Sequential quicksort ==");

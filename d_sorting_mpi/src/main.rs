@@ -1,27 +1,23 @@
 mod mergesort;
 
 use mpi::traits::*;
-use rand::seq::SliceRandom;
+use rand::RngExt;
 use std::time;
 
 const CPUS: usize = 8;
 
 const DO_DEBUG_LOG: bool = false;
 
-const NUM_VAL_MIN: u16 = 1;
-const NUM_VAL_MAX: u16 = 10_000;
-const NUM_AMOUNT: usize = 1000;
+const INPUT_SIZE: usize = 100_000_000;
 
-fn generate_input() -> [u16; NUM_AMOUNT] {
-    let mut all_numbers: Vec<_> = (NUM_VAL_MIN..=NUM_VAL_MAX).collect();
-    all_numbers.shuffle(&mut rand::rng());
-    all_numbers[..NUM_AMOUNT].try_into().unwrap()
+fn generate_input(rng: &mut rand::rngs::ThreadRng) -> Vec<u32> {
+    (0..INPUT_SIZE).map(|_| rng.random()).collect()
 }
 
-fn print_results(arr: &[u16], instant: &time::Instant) {
+fn print_results(arr: &Vec<u32>, instant: &time::Instant) {
     println!("Is sorted: {}", arr.is_sorted());
     println!("~ Elapsed: {:.2?}", instant.elapsed());
-    println!(" As nanos: {:?}", instant.elapsed().as_nanos());
+    //println!(" As nanos: {:?}", instant.elapsed().as_nanos());
 }
 
 // mpiexec -np 8 .\d_sorting_mpi.exe
@@ -29,19 +25,24 @@ fn print_results(arr: &[u16], instant: &time::Instant) {
 fn main() {
     let do_debug_log = DO_DEBUG_LOG;
 
+    // Init MPI
     let universe = mpi::initialize().unwrap();
     let world = universe.world();
     let size = world.size();
     let rank = world.rank();
 
+    // Here we have hardcoded 8 CPUS
     if size != CPUS as i32 {
         eprintln!("\n[!] Size of MPI_COMM_WORLD must be {CPUS}, but is {size}.");
         return;
     }
 
     match rank {
+        // == MPI Master ==
         0 => {
-            let arr_orig = generate_input();
+            let mut rng = rand::rng();
+            let arr_orig = generate_input(&mut rng);
+            println!("\nGenerated vector of size {}", arr_orig.len());
 
             println!("\n== Sequential ==");
             let mut arr = arr_orig.clone();
@@ -62,6 +63,7 @@ fn main() {
             let chunk_size = arr.len() / (CPUS - 1);
 
             // Send chunks to workers
+            // `i` serves as a worker rank
             for i in 1..CPUS {
                 let start = (i - 1) * chunk_size;
                 let end = if i == CPUS - 1 {
@@ -74,7 +76,7 @@ fn main() {
 
             // Get sorted chunks from workers
             for i in 1..CPUS {
-                let (chunk, status) = world.process_at_rank(i as i32).receive_vec::<u16>();
+                let (chunk, status) = world.process_at_rank(i as i32).receive_vec::<u32>();
                 if do_debug_log {
                     println!("Master received sorted chunk {i}; {status:?}.");
                 }
@@ -93,8 +95,9 @@ fn main() {
             // Done
             print_results(&arr, &now);
         }
+        // == MPI Worker ==
         _ => {
-            let (mut chunk, status) = world.process_at_rank(0).receive_vec::<u16>();
+            let (mut chunk, status) = world.process_at_rank(0).receive_vec::<u32>();
             if do_debug_log {
                 println!(
                     "Process {} got chunk of size {}; {:?}.",
