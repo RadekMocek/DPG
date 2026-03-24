@@ -140,6 +140,24 @@ Is sorted: true
 ~ Elapsed: 8.06s
 ```
 
+Laptop (Mint + Core i7-6700HQ + 16 GB):
+
+```text
+Generated vector of size 100000000
+
+== Sequential ==
+Is sorted: true
+~ Elapsed: 28.01s
+
+== Concurrent ==
+Is sorted: true
+~ Elapsed: 8.42s
+
+== MPI ==
+Is sorted: true
+~ Elapsed: 7.20s
+```
+
 ### Násobení matic
 
 * Druhou matici si transponuji, pak zip→map→sum
@@ -160,6 +178,26 @@ mx2 created, size 3000x3000
 
 === MXMUL MPI ===
 ~ Elapsed: 5.31s
+
+=== Check ===
+1 == 2 OK
+2 == 3 OK
+```
+
+Laptop (Mint + Core i7-6700HQ + 16 GB):
+
+```text
+mx1 created, size 3000x3000
+mx2 created, size 3000x3000
+
+=== MXMUL Sequential ===
+~ Elapsed: 14.25s
+
+=== MXMUL Concurrent ===
+~ Elapsed: 6.19s
+
+=== MXMUL MPI ===
+~ Elapsed: 7.19s
 
 === Check ===
 1 == 2 OK

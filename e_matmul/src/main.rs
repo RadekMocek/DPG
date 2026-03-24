@@ -37,7 +37,7 @@ fn main() {
     match rank {
         // == MPI Master ==
         0 => {
-            let mx1 = SquareMx::random_square(dim, ITEM_VALUE_MIN, ITEM_VALUE_MAX);
+            let mx1 = SquareMx::new_random(dim, ITEM_VALUE_MIN, ITEM_VALUE_MAX);
 
             if do_print_mxs {
                 print!("{mx1}");
@@ -45,7 +45,7 @@ fn main() {
                 println!("mx1 created, size {dim}x{dim}");
             }
 
-            let mx2 = SquareMx::random_square(dim, ITEM_VALUE_MIN, ITEM_VALUE_MAX);
+            let mx2 = SquareMx::new_random(dim, ITEM_VALUE_MIN, ITEM_VALUE_MAX);
 
             if do_print_mxs {
                 println!(" * {mx2}");

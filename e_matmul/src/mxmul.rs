@@ -11,11 +11,11 @@ fn check_and_get_eq_dim(mx1: &SquareMx, mx2: &SquareMx) -> Option<usize> {
 pub(super) fn sequential(mx1: &SquareMx, mx2: &SquareMx) -> SquareMx {
     let Some(dim) = check_and_get_eq_dim(mx1, mx2) else {
         eprintln!("Aborting squaremx_mul, non compatible matrices were provided.");
-        return SquareMx::zeroes_square(0);
+        return SquareMx::new_zeroes(0);
     };
 
     let mx2t = mx2.get_transposed();
-    let mut result = SquareMx::zeroes_square(dim);
+    let mut result = SquareMx::new_zeroes(dim);
 
     for row_n in 0..dim {
         for col_n in 0..dim {
@@ -34,12 +34,12 @@ pub(super) fn sequential(mx1: &SquareMx, mx2: &SquareMx) -> SquareMx {
 pub(super) fn concurrent(mx1: &SquareMx, mx2: &SquareMx, n_threads: usize) -> SquareMx {
     let Some(dim) = check_and_get_eq_dim(mx1, mx2) else {
         eprintln!("Aborting squaremx_mul, non compatible matrices were provided.");
-        return SquareMx::zeroes_square(0);
+        return SquareMx::new_zeroes(0);
     };
 
     let dim_chunk_len = dim.div_ceil(n_threads);
     let mx2t = mx2.get_transposed();
-    let mut result = SquareMx::zeroes_square(dim);
+    let mut result = SquareMx::new_zeroes(dim);
 
     thread::scope(|s| {
         let a = mx1;

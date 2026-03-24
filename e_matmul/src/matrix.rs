@@ -9,14 +9,14 @@ pub(super) struct SquareMx {
 }
 
 impl SquareMx {
-    pub(super) fn zeroes_square(dim: usize) -> Self {
+    pub(super) fn new_zeroes(dim: usize) -> Self {
         Self {
             items: vec![0; dim * dim],
             dim,
         }
     }
 
-    pub(super) fn random_square(dim: usize, from: u32, to: u32) -> Self {
+    pub(super) fn new_random(dim: usize, from: u32, to: u32) -> Self {
         let mut rng = rand::rng();
         let range = rand::distr::Uniform::try_from(from..to).unwrap();
         Self {
@@ -26,7 +26,7 @@ impl SquareMx {
     }
 
     pub(super) fn get_transposed(&self) -> SquareMx {
-        let mut result = Self::zeroes_square(self.dim);
+        let mut result = Self::new_zeroes(self.dim);
         for row_n in 0..self.dim {
             for col_n in 0..self.dim {
                 result[(col_n, row_n)] = self[(row_n, col_n)];
